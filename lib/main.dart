@@ -1,7 +1,10 @@
-import 'package:earthquake/data/remote/network_source.dart';
+import 'package:earthquake/service_locator.dart' as ServiceLocator;
 import 'package:flutter/material.dart';
 
+import 'screens/main_screen.dart';
+
 void main() {
+  ServiceLocator.setup();
   runApp(EarthquakeApp());
 }
 
@@ -10,46 +13,14 @@ class EarthquakeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Earthquake',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: MainScreen.ROUTE_ID,
+      routes: {
+        MainScreen.ROUTE_ID: (context) => MainScreen(),
+      },
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: []),
-      ),
-    );
-  }
-
-  void getData() async {
-    NetworkHelper helper = new NetworkHelper();
-    final res = await helper.getEarthquakes();
-    print(res.earthquakes);
   }
 }

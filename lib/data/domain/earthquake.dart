@@ -5,6 +5,7 @@ import 'package:earthquake/data/remote/resposne.dart';
 class Earthquake {
   final double magintude;
   final String place;
+  final String offset;
   final int time;
   final String url;
   final String detail;
@@ -15,6 +16,7 @@ class Earthquake {
   Earthquake({
     required this.magintude,
     required this.place,
+    required this.offset,
     required this.time,
     required this.url,
     required this.detail,
@@ -27,6 +29,7 @@ class Earthquake {
   Earthquake copyWith({
     double? magintude,
     String? place,
+    String? offset,
     int? time,
     String? url,
     String? detail,
@@ -38,6 +41,7 @@ class Earthquake {
     return Earthquake(
       magintude: magintude ?? this.magintude,
       place: place ?? this.place,
+      offset: offset ?? this.offset,
       time: time ?? this.time,
       url: url ?? this.url,
       detail: detail ?? this.detail,
@@ -52,6 +56,7 @@ class Earthquake {
     return {
       'magintude': magintude,
       'place': place,
+      'offset': offset,
       'time': time,
       'url': url,
       'detail': detail,
@@ -66,6 +71,7 @@ class Earthquake {
     return Earthquake(
       magintude: map['magintude'],
       place: map['place'],
+      offset: map['offset'],
       time: map['time'],
       url: map['url'],
       detail: map['detail'],
@@ -81,9 +87,17 @@ class Earthquake {
   factory Earthquake.fromJson(String source) =>
       Earthquake.fromMap(json.decode(source));
   factory Earthquake.fromDto(EarthquakeDto dto) {
+    int index = dto.properties.place.indexOf("of");
+    String offset =
+        index != -1 ? dto.properties.place.substring(0, index) : "Near";
+    String place = index != -1
+        ? dto.properties.place.substring(index + 2)
+        : dto.properties.place;
+  
     return Earthquake(
         magintude: dto.properties.mag,
-        place: dto.properties.place,
+        place: place,
+        offset: offset,
         time: dto.properties.time,
         url: dto.properties.url,
         detail: dto.properties.detail,
