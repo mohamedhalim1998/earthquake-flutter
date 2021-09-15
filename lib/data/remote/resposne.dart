@@ -28,24 +28,27 @@ class Response {
 class EarthquakeDto {
   final EarthquakeProperties properties;
   final List<double> coordinates;
+  final String id;
   EarthquakeDto({
     required this.properties,
     required this.coordinates,
+    required this.id,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'properties': properties.toMap(),
       'coordinates': coordinates,
+      'id': id,
     };
   }
 
   factory EarthquakeDto.fromMap(Map<String, dynamic> map) {
     return EarthquakeDto(
-      properties: EarthquakeProperties.fromMap(map['properties']),
-      coordinates: List.generate(
-          3, (index) => map['geometry']['coordinates'][index].toDouble()),
-    );
+        properties: EarthquakeProperties.fromMap(map['properties']),
+        coordinates: List.generate(
+            3, (index) => map['geometry']['coordinates'][index].toDouble()),
+        id: map['id']);
   }
 
   String toJson() => json.encode(toMap());
@@ -54,7 +57,8 @@ class EarthquakeDto {
       EarthquakeDto.fromMap(json.decode(source));
 
   @override
-  String toString() => 'EarthquakeDto(properties: $properties, coordinates: $coordinates)';
+  String toString() =>
+      'EarthquakeDto(id: $id, properties: $properties, coordinates: $coordinates)';
 }
 
 class EarthquakeProperties {

@@ -3,17 +3,19 @@ import 'dart:convert';
 import 'package:earthquake/data/remote/resposne.dart';
 
 class Earthquake {
+  final String id;
   final double magintude;
   final String place;
   final String offset;
   final int time;
   final String url;
   final String detail;
-  final bool causeTsunami;
+  final int causeTsunami;
   final double long;
-  final double lag;
+  final double lat;
   final double depth;
   Earthquake({
+    required this.id,
     required this.magintude,
     required this.place,
     required this.offset,
@@ -22,23 +24,25 @@ class Earthquake {
     required this.detail,
     required this.causeTsunami,
     required this.long,
-    required this.lag,
+    required this.lat,
     required this.depth,
   });
 
   Earthquake copyWith({
+    String? id,
     double? magintude,
     String? place,
     String? offset,
     int? time,
     String? url,
     String? detail,
-    bool? causeTsunami,
+    int? causeTsunami,
     double? long,
-    double? lag,
+    double? lat,
     double? depth,
   }) {
     return Earthquake(
+      id: id ?? this.id,
       magintude: magintude ?? this.magintude,
       place: place ?? this.place,
       offset: offset ?? this.offset,
@@ -47,13 +51,14 @@ class Earthquake {
       detail: detail ?? this.detail,
       causeTsunami: causeTsunami ?? this.causeTsunami,
       long: long ?? this.long,
-      lag: lag ?? this.lag,
+      lat: lat ?? this.lat,
       depth: depth ?? this.depth,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'magintude': magintude,
       'place': place,
       'offset': offset,
@@ -62,13 +67,14 @@ class Earthquake {
       'detail': detail,
       'causeTsunami': causeTsunami,
       'long': long,
-      'lag': lag,
+      'lat': lat,
       'depth': depth,
     };
   }
 
   factory Earthquake.fromMap(Map<String, dynamic> map) {
     return Earthquake(
+      id: map['id'],
       magintude: map['magintude'],
       place: map['place'],
       offset: map['offset'],
@@ -77,7 +83,7 @@ class Earthquake {
       detail: map['detail'],
       causeTsunami: map['causeTsunami'],
       long: map['long'],
-      lag: map['lag'],
+      lat: map['lat'],
       depth: map['depth'],
     );
   }
@@ -93,50 +99,34 @@ class Earthquake {
     String place = index != -1
         ? dto.properties.place.substring(index + 2)
         : dto.properties.place;
-  
+
     return Earthquake(
+        id: dto.id,
         magintude: dto.properties.mag,
         place: place,
         offset: offset,
         time: dto.properties.time,
         url: dto.properties.url,
         detail: dto.properties.detail,
-        causeTsunami: dto.properties.tsunami == 1,
+        causeTsunami: dto.properties.tsunami,
         long: dto.coordinates[0],
-        lag: dto.coordinates[1],
+        lat: dto.coordinates[1],
         depth: dto.coordinates[2]);
   }
   @override
   String toString() {
-    return 'Earthquake(magintude: $magintude, place: $place, time: $time, url: $url, detail: $detail, causeTsunami: $causeTsunami, long: $long, lag: $lag, depth: $depth)';
+    return 'Earthquake(magintude: $magintude, place: $place, time: $time, url: $url, detail: $detail, causeTsunami: $causeTsunami, long: $long, lag: $lat, depth: $depth)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Earthquake &&
-        other.magintude == magintude &&
-        other.place == place &&
-        other.time == time &&
-        other.url == url &&
-        other.detail == detail &&
-        other.causeTsunami == causeTsunami &&
-        other.long == long &&
-        other.lag == lag &&
-        other.depth == depth;
+    return other is Earthquake && id == other.id;
   }
 
   @override
   int get hashCode {
-    return magintude.hashCode ^
-        place.hashCode ^
-        time.hashCode ^
-        url.hashCode ^
-        detail.hashCode ^
-        causeTsunami.hashCode ^
-        long.hashCode ^
-        lag.hashCode ^
-        depth.hashCode;
+    return id.hashCode;
   }
 }
