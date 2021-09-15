@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:earthquake/bloc/earthquake_bloc.dart';
 import 'package:earthquake/data/domain/earthquake.dart';
 import 'package:earthquake/service_locator.dart';
@@ -17,8 +15,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late final ScrollController scrollController;
-  bool loading = true;
-  final indicator = new GlobalKey<RefreshIndicatorState>();
   @override
   void initState() {
     super.initState();
@@ -35,9 +31,6 @@ class _MainScreenState extends State<MainScreen> {
             stream: widget.bloc.earthquakes,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                setState(() {
-                  loading = false;
-                });
                 List<Earthquake> earthquakes = snapshot.data!;
                 return ListView.builder(
                     controller: scrollController,
@@ -49,15 +42,19 @@ class _MainScreenState extends State<MainScreen> {
               }
             },
           ),
-          Visibility(
-            child: Container(
-              width: double.infinity,
-              height: 200.0,
-              child: CircularProgressIndicator(),
-              alignment: Alignment.center,
-            ),
-            visible: loading,
-          ),
+          StreamBuilder<bool>(
+              stream: widget.bloc.loading,
+              builder: (context, snapshot) {
+                return Visibility(
+                  child: Container(
+                    width: double.infinity,
+                    height: 200.0,
+                    child: CircularProgressIndicator(),
+                    alignment: Alignment.center,
+                  ),
+                  visible: snapshot.hasData ? snapshot.data! : false,
+                );
+              }),
         ],
       ),
     );
@@ -67,13 +64,13 @@ class _MainScreenState extends State<MainScreen> {
     if (scrollController.offset >=
             scrollController.position.maxScrollExtent - 20 &&
         !scrollController.position.outOfRange) {
-      setState(() {
-        loading = true;
-      });
       await widget.bloc.loadMore();
-      setState(() {
-        loading = false;
-      });
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.bloc.dispose();
   }
 }

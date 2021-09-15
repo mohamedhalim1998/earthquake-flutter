@@ -11,8 +11,11 @@ class EarthquakeBloc {
   bool _loading = false;
   final StreamController<List<Earthquake>> _earthquakeStreamController =
       new StreamController();
+  final StreamController<bool> _loadingStreamController =
+      new StreamController();
   Stream<List<Earthquake>> get earthquakes =>
       _earthquakeStreamController.stream;
+  Stream<bool> get loading => _loadingStreamController.stream;
   EarthquakeBloc(this._repository) {
     loadMore();
   }
@@ -20,15 +23,18 @@ class EarthquakeBloc {
   Future<void> loadMore() async {
     if (!_loading) {
       _loading = true;
+      _loadingStreamController.sink.add(_loading);
       _earthquakes.addAll(await _repository.getEarthquakes(offset: _offset));
       _earthquakeStreamController.sink.add(_earthquakes);
       _offset += PAGE_SIZE;
       _loading = false;
+      _loadingStreamController.sink.add(_loading);
     }
     print("offset: $_offset");
   }
 
   void dispose() {
     _earthquakeStreamController.close();
+    _loadingStreamController.close();
   }
 }
