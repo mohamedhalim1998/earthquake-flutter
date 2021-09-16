@@ -59,4 +59,9 @@ class DatabaseHelper {
                 offset TEXT,
                 time INTEGER);""");
   }
+
+  Future<Map<String,dynamic>> getById(String id) async {
+    Database db = await instance.database;
+     return (await db.query(_table, where: "id = ?", whereArgs: [id]))[0];
+  }
 }

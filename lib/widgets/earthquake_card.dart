@@ -6,37 +6,45 @@ import 'package:flutter/material.dart';
 
 class EarthquakeCard extends StatelessWidget {
   final Earthquake earthquake;
-  const EarthquakeCard({
-    Key? key,
-    required this.earthquake,
-  }) : super(key: key);
+  VoidCallback? onClick;
+  EarthquakeCard({Key? key, required this.earthquake, this.onClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListTile(
-          leading: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: getMagColor(earthquake.magintude)),
-            child: Center(
-              child: Text(earthquake.magintude.toStringAsFixed(2)),
-            ),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                earthquake.offset,
-                style: TextStyle(fontSize: 12.0),
+    return TextButton(
+      onPressed: () {
+        if (onClick != null) {
+          onClick!();
+        }
+      },
+      child: Card(
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            leading: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: getMagColor(earthquake.magintude)),
+              child: Center(
+                child: Text(earthquake.magintude.toStringAsFixed(2)),
               ),
-              Text(earthquake.place, ),
-            ],
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  earthquake.offset,
+                  style: TextStyle(fontSize: 12.0),
+                ),
+                Text(
+                  earthquake.place,
+                ),
+              ],
+            ),
           ),
         ),
       ),

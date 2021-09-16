@@ -19,7 +19,12 @@ class Repository {
       return list;
     } catch (e) {
       final list = (await _databaseHelper.getAll());
-      return List.generate(list.length, (index) => Earthquake.fromMap(list[index]));
+      return List.generate(
+          list.length, (index) => Earthquake.fromMap(list[index]));
     }
+  }
+
+  Future<Earthquake> getEarthquake(String id) async {
+    return Earthquake.fromMap((await  _databaseHelper.getById(id)));
   }
 }

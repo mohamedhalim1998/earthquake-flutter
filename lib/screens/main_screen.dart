@@ -1,5 +1,6 @@
 import 'package:earthquake/bloc/earthquake_bloc.dart';
 import 'package:earthquake/data/domain/earthquake.dart';
+import 'package:earthquake/screens/details_screen.dart';
 import 'package:earthquake/service_locator.dart';
 import 'package:earthquake/widgets/earthquake_card.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,17 @@ class _MainScreenState extends State<MainScreen> {
                 return ListView.builder(
                     controller: scrollController,
                     itemCount: earthquakes.length,
-                    itemBuilder: (context, index) =>
-                        EarthquakeCard(earthquake: earthquakes[index]));
+                    itemBuilder: (context, index) => EarthquakeCard(
+                          earthquake: earthquakes[index],
+                          onClick: () {
+                         //   widget.bloc.getEarthquake(earthquakes[index].id);
+                            Navigator.pushNamed(
+                              context,
+                              DetailsScreen.ROUTE_ID,
+                              arguments: earthquakes[index].id
+                            );
+                          },
+                        ));
               } else {
                 return Container();
               }
@@ -71,6 +81,5 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     super.dispose();
-    widget.bloc.dispose();
   }
 }
